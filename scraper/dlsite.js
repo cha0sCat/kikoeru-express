@@ -118,7 +118,7 @@ const scrapeWorkStaticMetadata = async (id, language) => {
     // }
 
     // 标题
-    const titleElement = $(`a[href="${url}"]`);
+    const titleElement = $(`a[href="${url}"] span`);
     const titleText = titleElement.text();
     if (titleText) {
       work.title = titleText;
