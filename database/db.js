@@ -19,11 +19,7 @@ const knex = require('knex')({
   useNullAsDefault: true,
   version: '5.7',
   connection: { // 连接参数
-      host : config.databaseSettings.host,
-      port: config.databaseSettings.port,
-      user : config.databaseSettings.user,
-      password : config.databaseSettings.passwd,
-      database : config.databaseSettings.dbName
+      ...config.databaseSettings
   },
   acquireConnectionTimeout: 4000, // 连接计时器
   pool: {

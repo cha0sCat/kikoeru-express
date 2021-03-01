@@ -6,10 +6,7 @@ module.exports = {
   version: '5.7',
   connection: {
     // filename: path.join(config.databaseFolderDir, 'db.sqlite3')
-    host : config.databaseSettings.host,
-    user : config.databaseSettings.user,
-    password : config.databaseSettings.passwd,
-    database : config.databaseSettings.dbName
+    ...config.databaseSettings
   },
   migrations: {
     tableName: 'knex_migrations'
