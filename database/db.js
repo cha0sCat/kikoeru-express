@@ -3,32 +3,39 @@ const path = require('path');
 const { config } = require('../config');
 const { strftime } = require('./strftime')
 
-const databaseFolderDir = config.databaseFolderDir;
-if (!fs.existsSync(databaseFolderDir)) {
-  try {
-    fs.mkdirSync(databaseFolderDir, { recursive: true });
-  } catch(err) {
-    console.error(` ! 在创建存放数据库文件的文件夹时出错: ${err.message}`);
-  }
-}
+// const databaseFolderDir = config.databaseFolderDir;
+// if (!fs.existsSync(databaseFolderDir)) {
+//   try {
+//     fs.mkdirSync(databaseFolderDir, { recursive: true });
+//   } catch(err) {
+//     console.error(` ! 在创建存放数据库文件的文件夹时出错: ${err.message}`);
+//   }
+// }
 
-const databaseExist = fs.existsSync(path.join(databaseFolderDir, 'db.sqlite3'));
 
 // knex 操作数据库
 const knex = require('knex')({
-  client: 'sqlite3', // 数据库类型
+  client: 'mysql', // 数据库类型
   useNullAsDefault: true,
   connection: { // 连接参数
-    filename: path.join(databaseFolderDir, 'db.sqlite3'),
+      host : config.databaseSettings.host,
+      port: config.databaseSettings.port,
+      user : config.databaseSettings.user,
+      password : config.databaseSettings.passwd,
+      database : config.databaseSettings.dbName
   },
-  acquireConnectionTimeout: 40000, // 连接计时器
+  acquireConnectionTimeout: 4000, // 连接计时器
   pool: {
     afterCreate: (conn, cb) => {
-      conn.run('PRAGMA foreign_keys = ON', cb)
+      // conn.run('PRAGMA foreign_keys = ON', cb)
     }
   }
 });
 
+const databaseExist = false;
+knex.schema.hasTable("t_user").then( res => {
+    this.databaseExist = res;
+})
 /**
  * Takes a work metadata object and inserts it into the database.
  * @param {Object} work Work object.
@@ -348,7 +355,8 @@ const getWorksBy = ({id, field, username = ''} = {}) => {
 
 /**
  * 根据关键字查询音声
- * @param {String} keyword 
+ * @param {String} keyword
+ * @param username
  */
 const getWorksByKeyWord = ({keyword, username = 'admin'} = {}) => {
   const ratingSubQuery = knex('t_review')
@@ -385,7 +393,7 @@ const getWorksByKeyWord = ({keyword, username = 'admin'} = {}) => {
 
 /**
  * 获取所有社团/标签/声优的元数据列表
- * @param {Starting} field ['circle', 'tag', 'va'] 中的一个
+ * @param {String} field ['circle', 'tag', 'va'] 中的一个
  */
 const getLabels = (field) => {
   if (field === 'circle') {
@@ -457,7 +465,7 @@ const resetUserPassword = (user) => knex.transaction(trx => trx('t_user')
 
 /**
  * 删除用户
- * @param {Object} user User object.
+ * @param {Object} users User object.
  */
 const deleteUser = users => knex.transaction(trx => trx('t_user')
   .where('name', 'in', users.map(user => user.name))

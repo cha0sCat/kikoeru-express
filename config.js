@@ -36,7 +36,14 @@ const defaultConfig = {
     // }
   ],
   coverFolderDir: process.pkg ? path.join(process.execPath, '..', 'covers') : path.join(__dirname, 'covers'),
-  databaseFolderDir: process.pkg ? path.join(process.execPath, '..', 'sqlite') : path.join(__dirname, 'sqlite'),
+  // databaseFolderDir: process.pkg ? path.join(process.execPath, '..', 'sqlite') : path.join(__dirname, 'sqlite'),
+  databaseSettings: {
+    host: "localhost",
+    port: "3306",
+    dbName: "asmr",
+    user: "asmr",
+    passwd: "HelloWorld"
+  },
   coverUseDefaultPath: false, // Ignores coverFolderDir if set to true
   dbUseDefaultPath: true, // Ignores databaseFolderDir if set to true
   voiceWorkDefaultPath: voiceWorkDefaultPath(),
