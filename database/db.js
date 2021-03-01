@@ -22,11 +22,11 @@ const knex = require('knex')({
       ...config.databaseSettings
   },
   acquireConnectionTimeout: 4000, // 连接计时器
-  pool: {
-    afterCreate: (conn, cb) => {
-      // conn.run('PRAGMA foreign_keys = ON', cb)
-    }
-  }
+  // pool: {
+  //   afterCreate: (conn, cb) => {
+  //     // conn.run('PRAGMA foreign_keys = ON', cb)
+  //   }
+  // }
 });
 
 const databaseExist = false;

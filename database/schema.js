@@ -11,7 +11,7 @@ const createSchema = () => knex.schema
     table.string('root_folder').notNullable(); // VARCHAR 类型 [根文件夹别名]
     table.string('dir').notNullable(); // VARCHAR 类型 [相对存储路径]
     table.string('title').notNullable(); // VARCHAR 类型 [音声名称]
-    table.integer('circle_id').notNullable(); // INTEGER 类型 [社团id]
+    table.integer('circle_id').unsigned().notNullable(); // INTEGER 类型 [社团id]
     table.boolean('nsfw'); // BOOLEAN 类型
     table.string('release');  // VARCHAR 类型 [贩卖日 (YYYY-MM-DD)]
 
@@ -36,15 +36,15 @@ const createSchema = () => knex.schema
     table.primary('id');
   })
   .createTable('r_tag_work', (table) => {
-    table.integer('tag_id');
-    table.integer('work_id');
+    table.integer('tag_id').unsigned();
+    table.integer('work_id').unsigned();
     table.foreign('tag_id').references('id').inTable('t_tag'); // FOREIGN KEY 外键
     table.foreign('work_id').references('id').inTable('t_work'); // FOREIGN KEY 外键
     table.primary(['tag_id', 'work_id']); // PRIMARY KEYprimary 主键
   })
   .createTable('r_va_work', (table) => {
     table.string('va_id');
-    table.integer('work_id');
+    table.integer('work_id').unsigned();
     table.foreign('va_id').references('id').inTable('t_va').onUpdate('CASCADE').onDelete('CASCADE'); // FOREIGN KEY 外键
     table.foreign('work_id').references('id').inTable('t_work').onUpdate('CASCADE').onDelete('CASCADE'); // FOREIGN KEY 外键
     table.primary(['va_id', 'work_id']); // PRIMARY KEYprimary 主键
@@ -57,7 +57,7 @@ const createSchema = () => knex.schema
   })
   .createTable('t_review', (table) => {
     table.string('user_name').notNullable();
-    table.string('work_id').notNullable();
+    table.integer('work_id').notNullable().unsigned();
     table.integer('rating'); // 用户评分1-5
     table.string('review_text'); // 用户评价文字
     table.timestamps(true, true); // 时间戳created_at, updated_at
