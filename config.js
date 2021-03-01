@@ -38,11 +38,12 @@ const defaultConfig = {
   coverFolderDir: process.pkg ? path.join(process.execPath, '..', 'covers') : path.join(__dirname, 'covers'),
   // databaseFolderDir: process.pkg ? path.join(process.execPath, '..', 'sqlite') : path.join(__dirname, 'sqlite'),
   databaseSettings: {
+    socketPath: "",
     host: "localhost",
     port: "3306",
-    dbName: "asmr",
+    database: "asmr",
     user: "asmr",
-    passwd: "HelloWorld"
+    password: "HelloWorld"
   },
   coverUseDefaultPath: false, // Ignores coverFolderDir if set to true
   dbUseDefaultPath: true, // Ignores databaseFolderDir if set to true
@@ -101,17 +102,17 @@ const getConfig = () => {
   if(!path.isAbsolute(config.coverFolderDir)) {
     config.coverFolderDir = process.pkg ? path.join(process.execPath, '..', config.coverFolderDir) : path.join(__dirname, config.coverFolderDir);
   }
-  if(!path.isAbsolute(config.databaseFolderDir)) {
-    config.databaseFolderDir = process.pkg ? path.join(process.execPath, '..', config.databaseFolderDir) : path.join(__dirname, config.databaseFolderDir);
-  }
+  // if(!path.isAbsolute(config.databaseFolderDir)) {
+  //   config.databaseFolderDir = process.pkg ? path.join(process.execPath, '..', config.databaseFolderDir) : path.join(__dirname, config.databaseFolderDir);
+  // }
 
   // Use ./covers and ./sqlite to override settings, ignoring corresponding fields in config
   if (config.coverUseDefaultPath) {
     config.coverFolderDir = process.pkg ? path.join(process.execPath, '..', 'covers') : path.join(__dirname, 'covers');
   }
-  if (config.dbUseDefaultPath) {
-    config.databaseFolderDir = process.pkg ? path.join(process.execPath, '..', 'sqlite') : path.join(__dirname, 'sqlite');
-  }
+  // if (config.dbUseDefaultPath) {
+  //   config.databaseFolderDir = process.pkg ? path.join(process.execPath, '..', 'sqlite') : path.join(__dirname, 'sqlite');
+  // }
 };
 
 // Migrate config

@@ -59,6 +59,7 @@
     "limit-promise": "^1.0.4",
     "lodash": "^4.17.20",
     "md5": "^2.3.0",
+    "mysql": "^2.18.1",
     "natural-orderby": "^2.0.3",
     "recursive-readdir": "^2.2.2",
     "socket.io": "^2.4.1",

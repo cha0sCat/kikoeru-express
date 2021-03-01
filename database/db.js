@@ -17,6 +17,7 @@ const { strftime } = require('./strftime')
 const knex = require('knex')({
   client: 'mysql', // 数据库类型
   useNullAsDefault: true,
+  version: '5.7',
   connection: { // 连接参数
       host : config.databaseSettings.host,
       port: config.databaseSettings.port,
