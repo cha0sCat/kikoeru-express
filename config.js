@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const stringRandom = require('string-random');
+const crypto = require('crypto')
 
 const configFolderDir = process.pkg ? path.join(process.execPath, '..', 'config') : path.join(__dirname, 'config');
 const configPath = path.join(configFolderDir, 'config.json');
@@ -27,6 +27,7 @@ const voiceWorkDefaultPath = () => {
 const defaultConfig = {
   version: pjson.version,
   dbBusyTimeout: 1000,
+  production: process.env.NODE_ENV === 'production',
   checkUpdate: true,
   checkBetaUpdate: false,
   maxParallelism: 16,
@@ -41,10 +42,10 @@ const defaultConfig = {
   coverUseDefaultPath: false, // Ignores coverFolderDir if set to true
   dbUseDefaultPath: true, // Ignores databaseFolderDir if set to true
   voiceWorkDefaultPath: voiceWorkDefaultPath(),
-  auth: false,
+  auth: process.env.NODE_ENV === 'production',
   publicRegistration: false,
-  md5secret: stringRandom(14),
-  jwtsecret: stringRandom(14),
+  md5secret: crypto.randomBytes(32).toString('hex'),
+  jwtsecret: crypto.randomBytes(32).toString('hex'),
   expiresIn: 2592000,
   scannerMaxRecursionDepth: 2,
   pageSize: 12,
@@ -65,7 +66,11 @@ const defaultConfig = {
   skipCleanup: false,
   enableGzip: true,
   rewindSeekTime: 5,
-  forwardSeekTime: 30
+  forwardSeekTime: 30,
+  enableUnsafeRoutes: false,
+  offloadMedia: false,
+  offloadStreamPath: '/media/stream/',
+  offloadDownloadPath: '/media/download/'
 };
 
 const initConfig = () => {
@@ -73,9 +78,19 @@ const initConfig = () => {
   fs.writeFileSync(configPath, JSON.stringify(defaultConfig, null, "\t"));
 }
 
-const setConfig = newConfig => {
+const setConfig = (newConfig) => {
+  // Prevent changing some values, overwrite with old ones
+  newConfig.production = config.production;
+  if (process.env.NODE_ENV === 'production' || config.production) {
+    newConfig.enableUnsafeRoutes = false;
+    newConfig.auth = true;
+  }
+  newConfig.md5secret = config.md5secret;
+  newConfig.jwtsecret = config.jwtsecret;
+
+  // Merge config
   config = Object.assign(config, newConfig);
-  fs.writeFileSync(configPath, JSON.stringify(newConfig, null, "\t"));
+  fs.writeFileSync(configPath, JSON.stringify(config, null, "\t"));
 }
 
 // Get or use default value
@@ -106,6 +121,12 @@ const getConfig = () => {
   }
   if (config.dbUseDefaultPath) {
     config.databaseFolderDir = process.pkg ? path.join(process.execPath, '..', 'sqlite') : path.join(__dirname, 'sqlite');
+  }
+
+  // Disable unsafe routes for production environment
+  if (process.env.NODE_ENV === 'production' || config.production) {
+    config.enableUnsafeRoutes = false;
+    config.auth = true;
   }
 };
 
