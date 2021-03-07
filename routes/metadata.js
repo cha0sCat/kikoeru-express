@@ -4,6 +4,7 @@ const router = express.Router();
 const db = require('../database/db');
 const { getTrackList, toTree } = require('../filesystem/utils');
 const { config } = require('../config');
+const normalize = require('./utils/normalize')
 
 const PAGE_SIZE = config.pageSize || 12;
 
@@ -29,7 +30,12 @@ router.get('/work/:id', (req, res, next) => {
     username = req.user.name;
   }
   db.getWorkMetadata(req.params.id, username)
-    .then(work => res.send(work))
+    .then(work => {
+      // work is an Array of length 1
+      // db.getWorkMetadata(id, username) throws if nothing is found
+      normalize(work);
+      res.send(work[0]);
+    })
     .catch(err => next(err));
 });
 
@@ -81,6 +87,8 @@ router.get('/works', async (req, res, next) => {
       .orderBy([{ column: 'release', order: 'desc'}, { column: 'id', order: 'desc' }])
     }
 
+    works = normalize(works);
+    
     res.send({
       works,
       pagination: {
@@ -90,7 +98,7 @@ router.get('/works', async (req, res, next) => {
       }
     });
   } catch(err) {
-    res.status(500).send({error: '查询过程中出错'});
+    res.status(500).send({error: '服务器错误'});
     console.error(err)
     // next(err);
   }
@@ -110,6 +118,7 @@ router.get('/get-name/:field/:id', (req, res, next) => {
     .catch(err => next(err));
 });
 
+// eslint-disable-next-line no-unused-vars
 router.get('/search/:keyword?', async (req, res, next) => {
   const keyword = req.params.keyword ? req.params.keyword.trim() : '';
   const currentPage = parseInt(req.query.page) || 1;
@@ -134,6 +143,8 @@ router.get('/search/:keyword?', async (req, res, next) => {
         .orderBy([{ column: 'release', order: 'desc'}, { column: 'id', order: 'desc' }])
     }
 
+    works = normalize(works);
+
     res.send({
       works,
       pagination: {
@@ -144,11 +155,13 @@ router.get('/search/:keyword?', async (req, res, next) => {
     });
   } catch(err) {
     res.status(500).send({error: '查询过程中出错'});
-    next(err);
+    console.error(err);
+    // next(err);
   }
 });
 
 // GET list of work ids, restricted by circle/tag/VA
+// eslint-disable-next-line no-unused-vars
 router.get('/:field/:id', async (req, res, next) => {
   const currentPage = parseInt(req.query.page) || 1;
   // 通过 "音声id, 贩卖日, 用户评价, 售出数, 评论数量, 价格, 平均评价, 全年龄新作" 排序
@@ -172,6 +185,8 @@ router.get('/:field/:id', async (req, res, next) => {
       .orderBy([{ column: 'release', order: 'desc'}, { column: 'id', order: 'desc' }])
     }
 
+    works = normalize(works);
+
     res.send({
       works,
       pagination: {
@@ -182,7 +197,8 @@ router.get('/:field/:id', async (req, res, next) => {
     });
   } catch(err) {
     res.status(500).send({error: '查询过程中出错'});
-    next(err);
+    console.error(err);
+    // next(err);
   }
 });
 

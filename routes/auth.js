@@ -17,6 +17,7 @@ router.post('/me', [
   check('password')
     .isLength({ min: 5 })
     .withMessage('密码长度至少为 5')
+// eslint-disable-next-line no-unused-vars
 ], (req, res, next) => {
   // Finds the validation errors in this request and wraps them in an object with handy functions
   const errors = validationResult(req);
@@ -40,7 +41,9 @@ router.post('/me', [
       }
     })
     .catch((err) => {
-      next(err);
+      console.error(err);
+      res.status(500).send({error: '服务器错误'});
+      // next(err);
     });
 });
 
@@ -73,6 +76,7 @@ if (config.publicRegistration) {
     check('password')
         .isLength({min: 5})
         .withMessage('密码长度至少为 5'),
+  // eslint-disable-next-line no-unused-vars
   ], (req, res, next) => {
     // Finds the validation errors in this request and wraps them in an object with handy functions
     const errors = validationResult(req);
@@ -105,7 +109,9 @@ if (config.publicRegistration) {
             if (err.message.indexOf('已存在') !== -1) {
                 res.status(403).send({error: err.message});
             } else {
-                next(err);
+              console.error(err);
+              res.status(500).send({error: '服务器错误'});
+                // next(err);
             }
         });
 
