@@ -42,7 +42,7 @@ router.get('/stream/:id/:index', (req, res, next) => {
               // By default: /media/stream/RJ123456/subdirs/track.mp3
               // If the folder is deeper: /media/stream/second/RJ123456/subdirs/track.mp3
               const baseUrl = config.offloadStreamPath;
-              let offloadUrl = path.join(baseUrl, rootFolder.name, work.dir, track.subtitle || '', encodeURIComponent(track.title));
+              let offloadUrl = baseUrl + path.join(rootFolder.name, work.dir, track.subtitle || '', encodeURIComponent(track.title));
               if (process.platform === 'win32') {
                 offloadUrl = offloadUrl.replace(/\\/g, '/');
               }
@@ -79,7 +79,7 @@ router.get('/download/:id/:index', (req, res, next) => {
               // By default: /media/download/RJ123456/subdirs/track.mp3
               // If the folder is deeper: /media/download/second/RJ123456/subdirs/track.mp3
               const baseUrl = config.offloadDownloadPath;
-              let offloadUrl = path.join(baseUrl, rootFolder.name, work.dir, track.subtitle || '', encodeURIComponent(track.title));
+              let offloadUrl = baseUrl + path.join(rootFolder.name, work.dir, track.subtitle || '', encodeURIComponent(track.title));
               if (process.platform === 'win32') {
                 offloadUrl = offloadUrl.replace(/\\/g, '/');
               }
