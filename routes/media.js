@@ -20,7 +20,7 @@ router.get('/stream/:id/:index', (req, res, next) => {
           .then((tracks) => {
             const track = tracks[req.params.index];
 
-            const fileName = path.join(rootFolder.path, work.dir, track.subtitle || '', encodeURIComponent(track.title));
+            const fileName = path.join(rootFolder.path, work.dir, track.subtitle || '', track.title);
             const extName = path.extname(fileName);
             if (extName === '.txt' || extName === '.lrc') {
               const fileBuffer = fs.readFileSync(fileName);
@@ -89,7 +89,7 @@ router.get('/download/:id/:index', (req, res, next) => {
               res.redirect(offloadUrl);
             } else {
               // By default, serve file through express
-              res.download(path.join(rootFolder.path, work.dir, track.subtitle || '', encodeURIComponent(track.title)));
+              res.download(path.join(rootFolder.path, work.dir, track.subtitle || '', track.title));
             }
           })
           .catch(err => next(err));
