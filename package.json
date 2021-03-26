@@ -32,6 +32,7 @@
     "start": "node --trace-warnings app.js",
     "dev": "nodemon --trace-warnings app.js",
     "scan": "node --trace-warnings ./filesystem/scanner.js",
+    "update": "node --trace-warnings ./filesystem/perform_update.js",
     "build": "pkg package.json --out-path package",
     "test": "eslint . && mocha test/"
   },
