@@ -12,7 +12,7 @@ const signStaticFileUrl = (rawUrl, timestamp=Date.now() / 1000 | 0) => {
   const hmac = crypto.createHmac('sha256', config.signsecret)
       .update(url.pathname)
       .update(timestamp.toString());
-  const sign = encodeURIComponent(hmac.digest("base64"));
+  const sign = hmac.digest("base64")
   url.searchParams.append("verify", `${timestamp.toString()}-${sign}`);
   return url.href;
 }
