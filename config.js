@@ -46,6 +46,7 @@ const defaultConfig = {
   publicRegistration: false,
   md5secret: crypto.randomBytes(32).toString('hex'),
   jwtsecret: crypto.randomBytes(32).toString('hex'),
+  signsecret: crypto.randomBytes(32).toString('hex'),
   expiresIn: 2592000,
   scannerMaxRecursionDepth: 2,
   pageSize: 12,
@@ -69,6 +70,7 @@ const defaultConfig = {
   forwardSeekTime: 30,
   enableUnsafeRoutes: false,
   offloadMedia: false,
+  signOffloadMedia: false,
   offloadStreamPath: '/media/stream/',          // /media/stream/RJ123456/subdirs/track.mp3
   offloadDownloadPath: '/media/download/'      // /media/download/RJ123456/subdirs/track.mp3
 };

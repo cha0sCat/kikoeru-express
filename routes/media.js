@@ -5,8 +5,10 @@ const db = require('../database/db');
 const fs = require('fs');
 const path = require('path');
 const jschardet = require('jschardet');
+const {signStaticFileUrl} = require("./utils/sign");
 const { getTrackList } = require('../filesystem/utils');
-const { joinFragments } = require('./utils/url')
+const { joinFragments } = require('./utils/url');
+
 
 // GET (stream) a specific track from work folder
 router.get('/stream/:id/:index', (req, res, next) => {
@@ -48,7 +50,7 @@ router.get('/stream/:id/:index', (req, res, next) => {
                 offloadUrl = offloadUrl.replace(/\\/g, '/');
               }
 
-              res.redirect(offloadUrl);
+              res.redirect(config.signOffloadMedia ? signStaticFileUrl(offloadUrl) : offloadUrl);
             } else {
               // By default, serve file through express
               res.sendFile(fileName);
@@ -87,7 +89,7 @@ router.get('/download/:id/:index', (req, res, next) => {
 
               // Note: you should set 'Content-Disposition: attachment' header in your reverse proxy for the download virtual directory
               // By default the directory is /media/download
-              res.redirect(offloadUrl);
+              res.redirect(config.signOffloadMedia ? signStaticFileUrl(offloadUrl) : offloadUrl);
             } else {
               // By default, serve file through express
               res.download(path.join(rootFolder.path, work.dir, track.subtitle || '', track.title));
