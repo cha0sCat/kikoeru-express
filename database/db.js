@@ -109,6 +109,7 @@ const insertWorkMetadata = work => knex.transaction(trx => trx.raw(
  * @param {Object} work Work object.
  */
 const updateWorkMetadata = (work, options = {}) => knex.transaction(async (trx) => {
+  const extendMetadata = options.includeNSFW ? { nsfw: work.nsfw } : {};
   await trx('t_work')
     .where('id', '=', work.id)
     .update({
@@ -118,15 +119,9 @@ const updateWorkMetadata = (work, options = {}) => knex.transaction(async (trx) 
       rate_count: work.rate_count,
       rate_average_2dp: work.rate_average_2dp,
       rate_count_detail: JSON.stringify(work.rate_count_detail),
-      rank: work.rank ? JSON.stringify(work.rank) : null
+      rank: work.rank ? JSON.stringify(work.rank) : null,
+      ...extendMetadata
     });
-  if (options.includeNSFW) {
-    await trx('t_work')
-        .where('id', '=', work.id)
-        .update({
-          nsfw: work.nsfw
-        });
-  }
   if (options.includeVA) {
     await trx('r_va_work').where('work_id', work.id).del();
     for (const va of work.vas) {

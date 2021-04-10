@@ -595,7 +595,7 @@ const performScan = () => {
  */
 const updateMetadata = (id, options = {}) => {
   let scrapeProcessor = () => scrapeDynamicWorkMetadataFromDLsite(id);
-  if (options.includeVA || options.includeTags) {
+  if (options.includeVA || options.includeTags || options.includeNSFW) {
     // static + dynamic
     scrapeProcessor = () => scrapeWorkMetadataFromDLsite(id, config.tagLanguage);
   }
