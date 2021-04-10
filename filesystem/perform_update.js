@@ -619,7 +619,7 @@ const updateMetadata = (id, options = {}) => {
       });
 };
 
-const updateMetadataLimited = (id) => limitP.call(updateMetadata, id);
+const updateMetadataLimited = (id) => limitP.call(updateMetadata, id, { includeVA: true });
 const updateVoiceActorLimited = (id) => limitP.call(updateMetadata, id, { includeVA: true });
 
 // eslint-disable-next-line no-unused-vars
