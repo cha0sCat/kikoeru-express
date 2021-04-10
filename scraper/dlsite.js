@@ -125,6 +125,7 @@ const scrapeStaticWorkMetadataFromDLsite = (id, language) => new Promise((resolv
       }
     })
     .then(() => {
+      console.log(`[RJ${rjcode}] 成功从 DLSite 抓取 Static 元数据...`);
       if (work.vas.length === 0) { 
         // 从 DLsite 抓不到声优信息时, 从 HVDB 抓取声优信息
         scrapeWorkMetadataFromHVDB(id)
