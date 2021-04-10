@@ -120,7 +120,13 @@ const updateWorkMetadata = (work, options = {}) => knex.transaction(async (trx) 
       rate_count_detail: JSON.stringify(work.rate_count_detail),
       rank: work.rank ? JSON.stringify(work.rank) : null
     });
-  
+  if (options.includeNSFW) {
+    await trx('t_work')
+        .where('id', '=', work.id)
+        .update({
+          nsfw: work.nsfw
+        });
+  }
   if (options.includeVA) {
     await trx('r_va_work').where('work_id', work.id).del();
     for (const va of work.vas) {
