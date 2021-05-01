@@ -34,7 +34,7 @@
     "scan": "node --trace-warnings ./filesystem/scanner.js",
     "update": "node --trace-warnings ./filesystem/perform_update.js",
     "build": "pkg package.json --out-path package",
-    "test": "eslint . && mocha test/"
+    "test": "cross-env eslint . && cross-env NODE_ENV=test mocha test/"
   },
   "author": "Watanuki-Kimihiro",
   "license": "GPL-3.0-or-later",
@@ -74,6 +74,7 @@
   },
   "devDependencies": {
     "chai": "^4.3.4",
+    "cross-env": "^7.0.3",
     "eslint": "^7.20.0",
     "eslint-plugin-node": "^11.1.0",
     "mocha": "^8.3.2",
