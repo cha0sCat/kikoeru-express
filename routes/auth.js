@@ -101,7 +101,7 @@ if (config.publicRegistration) {
                 .andWhere('password', '=', md5(user.password))
                 .first()
                 .then((user) => {
-                    const token = signtoken(user);
+                    const token = signToken(user);
                     res.send({token});
                 })
         })
