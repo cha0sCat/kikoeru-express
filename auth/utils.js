@@ -3,8 +3,8 @@ const md5 = require('md5');
 
 const { config } = require('../config');
 
-const issuer = 'http://kikoeru'
-const audience = 'http://kikoeru/api'
+const issuer = 'https://asmr.one'
+const audience = 'https://asmr.one/api'
 
 
 const signPayload = (payload) => jwt.sign(payload, config.jwtsecret, {expiresIn: config.expiresIn});
