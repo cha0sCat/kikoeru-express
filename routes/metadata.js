@@ -11,7 +11,7 @@ const { isValidRequest } = require('./utils/validate');
 const PAGE_SIZE = config.pageSize || 12;
 
 // GET work cover image
-router.get('/cover/:id',
+router.get(['/cover/:id.jpg', '/cover/:id'],
   param('id').isInt(),
   (req, res, next) => {
     if(!isValidRequest(req, res)) return;

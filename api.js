@@ -25,7 +25,8 @@ module.exports = (app) => {
         .unless({ path: [
             {url: '/api/auth/me'},
             {url: '/api/auth/reg', methods: ["GET", "POST"]},
-            {url: '/api/health'}
+            {url: '/api/health'},
+            {url: /\/api\/cover\/.*?/}
         ] }));
   }
 
