@@ -124,7 +124,7 @@ process.on('message', (m) => {
 
 /**
  * 通过数组 arr 中每个对象的 id 属性来对数组去重
- * @param {Array} arr 
+ * @param {Array} arr
  */
 const uniqueArr = (arr) => {
   const uniqueArr = [];
@@ -162,7 +162,7 @@ const getMetadata = (id, rootFolderName, dir, tagLanguage) => {
     level: 'info',
     message: '从 DLSite 抓取元数据...'
   });
-  
+
   return scrapeWorkMetadataFromDLsite(id, tagLanguage) // 抓取该音声的元数据
     .then((metadata) => {
       // 将抓取到的元数据插入到数据库
@@ -171,7 +171,7 @@ const getMetadata = (id, rootFolderName, dir, tagLanguage) => {
         level: 'info',
         message: '元数据抓取成功，准备添加到数据库...'
       });
-      
+
       metadata.rootFolderName = rootFolderName;
       metadata.dir = dir;
       return db.insertWorkMetadata(metadata)
@@ -181,7 +181,7 @@ const getMetadata = (id, rootFolderName, dir, tagLanguage) => {
             level: 'info',
             message: '元数据成功添加到数据库.'
           });
-          
+
           return 'added';
         })
         .catch((err) => {
@@ -190,7 +190,7 @@ const getMetadata = (id, rootFolderName, dir, tagLanguage) => {
             level: 'error',
             message: `在插入元数据过程中出错: ${err.message}`
           });
-          
+
           return 'failed';
         });
     })
@@ -200,7 +200,7 @@ const getMetadata = (id, rootFolderName, dir, tagLanguage) => {
         level: 'error',
         message: `在抓取元数据过程中出错: ${err.message}`
       });
-      
+
       return 'failed';
     });
 };
@@ -241,7 +241,7 @@ const getCoverImage = (id, types) => {
             level: 'error',
             message: `在下载封面 RJ${rjcode}_img_${type}.jpg 过程中出错: ${err.message}`
           });
-          
+
           return 'failed';
         })
     );
@@ -252,7 +252,7 @@ const getCoverImage = (id, types) => {
     level: 'info',
     message: `从 DLsite 下载封面...`
   });
-  
+
   return Promise.all(promises)
     .then((results) => {
       results.forEach(result => {
@@ -289,7 +289,7 @@ const processFolder = (folder) => db.knex('t_work')
           lostCoverTypes.push(type);
         }
       });
-      
+
       if (lostCoverTypes.length) {
         console.log(`  ! [RJ${rjcode}] 封面图片缺失，重新下载封面图片...`);
         addTask(rjcode);
@@ -309,7 +309,7 @@ const processFolder = (folder) => db.knex('t_work')
         level: 'info',
         message: `发现新文件夹: "${folder.absolutePath}"`
       });
-      
+
       return getMetadata(folder.id, folder.rootFolderName, folder.relativePath, config.tagLanguage) // 获取元数据
         .then((result) => {
           if (result === 'failed') { // 如果获取元数据失败，跳过封面图片下载
@@ -345,9 +345,9 @@ const performCleanup = async () => {
       db.removeWork(work.id, trxProvider) // 将其数据项从数据库中移除
         .then((result) => { // 然后删除其封面图片
           const rjcode = (`000000${work.id}`).slice(-6); // zero-pad to 6 digits
-          deleteCoverImageFromDisk(rjcode)    
+          deleteCoverImageFromDisk(rjcode)
             .catch((err) => {
-              if (err && err.code !== 'ENOENT') { 
+              if (err && err.code !== 'ENOENT') {
                 console.error(`  ! [RJ${rjcode}] 在删除封面过程中出错: ${err.message}`);
                 addMainLog({
                   level: 'error',
@@ -439,9 +439,9 @@ const performScan = () => {
             level: 'info',
             message: '清理本地不再存在的音声的数据与封面图片...'
           });
-  
+
           await performCleanup();
-  
+
           console.log(' * 清理完成. 现在开始扫描...');
           addMainLog({
             level: 'info',
@@ -453,7 +453,7 @@ const performScan = () => {
             level: 'error',
             message: `在执行清理过程中出错: ${err.message}`
           });
-  
+
           process.exit(1);
         }
       }
@@ -493,7 +493,7 @@ const performScan = () => {
             level: 'info',
             message: `发现 ${duplicateNum} 个重复的音声文件夹.`
           });
-          
+
           for (const key in duplicate) {
             const addedFolder = uniqueFolderList.find(folder => folder.id === parseInt(key));
             duplicate[key].push(addedFolder); // 最后一项为将要添加到数据库中的音声文件夹
@@ -520,7 +520,7 @@ const performScan = () => {
 
         counts['skipped'] += duplicateNum;
 
-        const promises = uniqueFolderList.map((folder) => 
+        const promises = uniqueFolderList.map((folder) =>
           processFolderLimited(folder)
             .then((result) => { // 统计处理结果
               const rjcode = (`000000${folder.id}`).slice(-6); // zero-pad to 6 digits\
@@ -559,7 +559,7 @@ const performScan = () => {
               message: message
             }
           });
-          
+
           db.knex.destroy();
           if (fixVAFailed) {
             process.exit(1);
@@ -623,7 +623,7 @@ const updateVoiceActorLimited = (id) => limitP.call(updateMetadata, id, { includ
 
 // eslint-disable-next-line no-unused-vars
 const performUpdate = async (options = null) => {
-  const baseQuery = db.knex('t_work').select('id');
+  const baseQuery = db.knex('t_work').select('id').orderBy('id', 'desc');
   const processor = (id) => updateMetadataLimited(id, options);
 
   const counts = await refreshWorks(baseQuery, 'id', processor);
@@ -658,7 +658,7 @@ const refreshWorks = async (query, idColumnName, processor) => {
     const counts = {
       updated: 0,
       failed: 0,
-    }; 
+    };
 
     const promises = works.map((work) => {
       const workid = work[idColumnName];
