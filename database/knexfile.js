@@ -31,7 +31,7 @@ module.exports = {
     connection: { // 连接参数
       filename: path.join(config.databaseFolderDir, 'db.sqlite3'),
     },
-    acquireConnectionTimeout: 4000, // 连接计时器
+    acquireConnectionTimeout: 40000, // 连接计时器
     pool: {
       afterCreate: (conn, done) => {
         conn.run('PRAGMA foreign_keys = ON;', function (err) {
